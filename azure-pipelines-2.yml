@@ -29,7 +29,7 @@ stages:
   - name: DBNAME_POSTFIX
     value: _DEV
   jobs:
-  - template: templates/snowflakeFlywayDeploy.yml
+  - template: templates/azure-pipelines-2.yml
     parameters:
       jobName: DEV
       databaseName: $(DBNAME)
