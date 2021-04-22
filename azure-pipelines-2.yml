@@ -1,0 +1,52 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+resources:
+  repositories:
+  # template repository
+  - repository: PipelineCommon
+    type: git
+    name: PipelineCommon
+    
+variables:
+- group: Snowflake.Database
+- name: DBNAME
+  value: flyway_demo
+- name: flywayartifactName
+  value: DatabaseArtifacts  
+- name: flywayVmImage
+  value: 'ubuntu-16.04'  
+- name: flywayContainerImage
+  value: rsangeetha94/Azure  
+trigger:
+- master
+
+stages:
+- stage: DEV
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _DEV
+  jobs:
+  - template: templates/snowflakeFlywayDeploy.yml
+    parameters:
+      jobName: DEV
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
+      environmentName: DEV
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
